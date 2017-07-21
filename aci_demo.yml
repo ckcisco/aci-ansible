@@ -227,5 +227,5 @@
         with_items:
             - "{{ epg_name1 }}"
             - "{{ epg_name2 }}"
-            - "{{ epg_name2 }}"
+            - "{{ epg_name3 }}"
 
