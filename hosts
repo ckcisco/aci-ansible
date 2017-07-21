@@ -3,7 +3,7 @@ apic       # single APIC in system- can also use IP if no DNS or /etc/hosts isn'
 
 
 [all:vars]
-host = 192.168.130.10
+host = 172.16.10.38
 user = 'admin'
-pass = 'Cisco!123' 
+pass = 'password@123' 
 

@@ -8,10 +8,10 @@
 
     vars:
         action: post
-        tenant_name: Ansible
+        tenant_name: Ansible3
         vrf_name: vrf_ansible
         bd:
-            name: bd_ansible_1
+            name: bd_ansible_2
             ip: 9.9.9.1
             mask: 24
 
@@ -22,8 +22,8 @@
         subject_name: Subject1
         epg_name1: web_epg
         epg_name2: db_epg
-        vmm_domain: Pod1
-        protocol: http    
+        vmm_domain: L2L2EXP-VMM
+        protocol: https    
 
     tasks:
 
@@ -31,7 +31,7 @@
         aci_tenant:
            action: "{{ action }}"
            tenant_name: "{{ tenant_name }}"
-           descr: 'tenant'
+           descr: 'Automated Deployment Using Ansible Playbook'
            host: "{{ host }}"
            username: "{{ user }}"
            password: "{{ pass }}"
