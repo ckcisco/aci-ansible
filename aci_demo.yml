@@ -8,20 +8,21 @@
 
     vars:
         action: post
-        tenant_name: Ansible3
+        tenant_name: Ansible-Automation
         vrf_name: vrf_ansible
         bd:
             name: bd_ansible_2
             ip: 9.9.9.1
             mask: 24
 
-        app_profile_name: app1
-        filter_name: Contract1_filter
-        entry_name: Contract1_entry
-        contract_name: Contract1
-        subject_name: Subject1
+        app_profile_name: CCC-POS-Application
+        filter_name1: Contract-web-app_filter
+        entry_name1: Contract-web-app_entry
+        contract_name1: Contract-web-app
+        subject_name1: Subject-web-app
         epg_name1: web_epg
-        epg_name2: db_epg
+        epg_name2: app_epg
+        epg_name3: db_epg
         vmm_domain: L2L2EXP-VMM
         protocol: https    
 
@@ -77,8 +78,8 @@
            tenant_name: "{{ tenant_name }}"
            epg_name: "{{ epg_name1 }}"
            bd_name: "{{ bd.name }}"
-           contract_name_provider: "{{ contract_name }}"
-           contract_name_consumer: "{{ contract_name }}"
+           contract_name_provider: "{{ contract_name1 }}"
+           contract_name_consumer: "{{ contract_name1 }}"
            contract_type: both
            host: "{{ host }}"
            username: "{{ user }}"
@@ -92,8 +93,8 @@
            tenant_name: "{{ tenant_name }}"
            epg_name: "{{ epg_name2 }}"
            bd_name: "{{ bd.name }}"
-           contract_name_provider: "{{ contract_name }}"
-           contract_name_consumer: "{{ contract_name }}"
+           contract_name_provider: "{{ contract_name1 }}"
+           contract_name_consumer: "{{ contract_name1 }}"
            contract_type: both
            host: "{{ host }}"
            username: "{{ user }}"
@@ -103,7 +104,7 @@
       - name: Create a Filter
         aci_filter:
            action: "{{ action }}"
-           filter_name: "{{ filter_name }}"
+           filter_name: "{{ filter_name1 }}"
            tenant_name: "{{ tenant_name }}"
            host: "{{ host }}"
            username: "{{ user }}"
@@ -113,9 +114,9 @@
       - name: Create Filter Entry
         aci_filter_entry:
            action: "{{ action }}"
-           entry_name: "{{ entry_name }}"
+           entry_name: "{{ entry_name1 }}"
            tenant_name: "{{ tenant_name }}"
-           filter_name: "{{ filter_name }}"
+           filter_name: "{{ filter_name1 }}"
            host: "{{ host }}"
            username: "{{ user }}"
            password: "{{ pass }}"
@@ -125,7 +126,7 @@
         aci_contract:
            action: "{{ action }}"
            tenant_name: "{{ tenant_name }}"
-           contract_name: "{{ contract_name }}"
+           contract_name: "{{ contract_name1 }}"
            scope: tenant
            host: "{{ host }}"
            username: "{{ user }}"
@@ -135,11 +136,11 @@
       - name: Create Contract Subjects
         aci_contract_subjects:
            action: "{{ action }}"
-           subject_name: "{{ subject_name }}"
-           contract_name: "{{ contract_name }}"
+           subject_name: "{{ subject_name1 }}"
+           contract_name: "{{ contract_name1 }}"
            tenant_name: "{{ tenant_name }}"
            reverse_filter: yes
-           filter_name: "{{ filter_name }}"
+           filter_name: "{{ filter_name1 }}"
            host: "{{ host }}"
            username: "{{ user }}"
            password: "{{ pass }}"
