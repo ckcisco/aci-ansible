@@ -11,19 +11,23 @@
         tenant_name: Ansible-Automation
         vrf_name: vrf_ansible
         bd:
-            name: bd_ansible_2
-            ip: 9.9.9.1
+            name: bd_ansible_1
+            ip: 10.9.90.1
             mask: 24
 
         app_profile_name: CCC-POS-Application
-        filter_name1: Contract-web-app_filter
-        entry_name1: Contract-web-app_entry
-        contract_name1: Contract-web-app
-        subject_name1: Subject-web-app
+        filter_name1: web-app_contract_filter
+        entry_name1: web-app_contract_entry
+        contract_name1: web-app_contract
+        subject_name1: web-app_subject
+        filter_name2: app-db_contract_filter
+        entry_name2: app-db_contract_entry
+        contract_name2: app-db_contract
+        subject_name2: app-db_subject
         epg_name1: web_epg
         epg_name2: app_epg
         epg_name3: db_epg
-        vmm_domain: L2L2EXP-VMM
+        vmm_domain: CLM-vCenter
         protocol: https    
 
     tasks:
@@ -79,7 +83,22 @@
            epg_name: "{{ epg_name1 }}"
            bd_name: "{{ bd.name }}"
            contract_name_provider: "{{ contract_name1 }}"
-           contract_name_consumer: "{{ contract_name1 }}"
+           contract_name_consumer: "Ansible-Tenant-External"
+           contract_type: both
+           host: "{{ host }}"
+           username: "{{ user }}"
+           password: "{{ pass }}"
+           protocol: "{{ protocol }}"
+
+      - name: Create app_epg
+        aci_epg:
+           action: "{{ action }}"
+           app_profile_name: "{{ app_profile_name }}"
+           tenant_name: "{{ tenant_name }}"
+           epg_name: "{{ epg_name2 }}"
+           bd_name: "{{ bd.name }}"
+           contract_name_provider: "{{ contract_name1 }}"
+           contract_name_consumer: "{{ contract_name2 }}"
            contract_type: both
            host: "{{ host }}"
            username: "{{ user }}"
@@ -91,17 +110,17 @@
            action: "{{ action }}"
            app_profile_name: "{{ app_profile_name }}"
            tenant_name: "{{ tenant_name }}"
-           epg_name: "{{ epg_name2 }}"
+           epg_name: "{{ epg_name3 }}"
            bd_name: "{{ bd.name }}"
-           contract_name_provider: "{{ contract_name1 }}"
-           contract_name_consumer: "{{ contract_name1 }}"
+           contract_name_provider: "{{ contract_name2 }}"
+           contract_name_consumer: "{{ contract_name2 }}"
            contract_type: both
            host: "{{ host }}"
            username: "{{ user }}"
            password: "{{ pass }}"
            protocol: "{{ protocol }}"
 
-      - name: Create a Filter
+      - name: Create a Filter 1st Tier
         aci_filter:
            action: "{{ action }}"
            filter_name: "{{ filter_name1 }}"
@@ -111,7 +130,7 @@
            password: "{{ pass }}"
            protocol: "{{ protocol }}"
 
-      - name: Create Filter Entry
+      - name: Create Filter Entry 1st Tier
         aci_filter_entry:
            action: "{{ action }}"
            entry_name: "{{ entry_name1 }}"
@@ -122,7 +141,7 @@
            password: "{{ pass }}"
            protocol: "{{ protocol }}"
 
-      - name: Create a Tenant Contract
+      - name: Create a Tenant Contract 1st Tier
         aci_contract:
            action: "{{ action }}"
            tenant_name: "{{ tenant_name }}"
@@ -133,7 +152,7 @@
            password: "{{ pass }}"
            protocol: "{{ protocol }}"
 
-      - name: Create Contract Subjects
+      - name: Create Contract Subjects 1st Tier
         aci_contract_subjects:
            action: "{{ action }}"
            subject_name: "{{ subject_name1 }}"
@@ -146,6 +165,50 @@
            password: "{{ pass }}"
            protocol: "{{ protocol }}"
 
+      - name: Create a Filter 2nd Tier
+        aci_filter:
+           action: "{{ action }}"
+           filter_name: "{{ filter_name2 }}"
+           tenant_name: "{{ tenant_name }}"
+           host: "{{ host }}"
+           username: "{{ user }}"
+           password: "{{ pass }}"
+           protocol: "{{ protocol }}"
+
+      - name: Create Filter Entry 2nd Tier
+        aci_filter_entry:
+           action: "{{ action }}"
+           entry_name: "{{ entry_name2 }}"
+           tenant_name: "{{ tenant_name }}"
+           filter_name: "{{ filter_name2 }}"
+           host: "{{ host }}"
+           username: "{{ user }}"
+           password: "{{ pass }}"
+           protocol: "{{ protocol }}"
+
+      - name: Create a Tenant Contract 2nd Tier
+        aci_contract:
+           action: "{{ action }}"
+           tenant_name: "{{ tenant_name }}"
+           contract_name: "{{ contract_name2 }}"
+           scope: tenant
+           host: "{{ host }}"
+           username: "{{ user }}"
+           password: "{{ pass }}"
+           protocol: "{{ protocol }}"
+
+      - name: Create Contract Subjects 2nd Tier
+        aci_contract_subjects:
+           action: "{{ action }}"
+           subject_name: "{{ subject_name2 }}"
+           contract_name: "{{ contract_name2 }}"
+           tenant_name: "{{ tenant_name }}"
+           reverse_filter: yes
+           filter_name: "{{ filter_name2 }}"
+           host: "{{ host }}"
+           username: "{{ user }}"
+           password: "{{ pass }}"
+           protocol: "{{ protocol }}"
 
 
       - name: Deploying EPG
@@ -163,5 +226,6 @@
            protocol: "{{ protocol }}"
         with_items:
             - "{{ epg_name1 }}"
+            - "{{ epg_name2 }}"
             - "{{ epg_name2 }}"
 
